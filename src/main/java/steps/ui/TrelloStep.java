@@ -1,14 +1,16 @@
-package steps;
+package steps.ui;
 	
 	import cucumber.api.java.pt.Dado;
 	import cucumber.api.java.pt.E;
 	import cucumber.api.java.pt.Quando;
 	import junit.framework.Assert;
+	import pom.BoardPage;
 	import pom.LoginPage;
 	import cucumber.api.java.pt.Entao;
 		
 	@SuppressWarnings("deprecation")
 	public class TrelloStep {
+		BoardPage boardPage;
 	    
 	    
 		@Dado("^que eu esteja logado no trello$")
@@ -22,33 +24,43 @@ package steps;
 
 	    @E("^acesse o board$")
 	    public void acessoOBoard() {
-	    	System.out.println("acesse o board");   
+			boardPage=new BoardPage();
+			boardPage.acessBoard();
+			Assert.assertEquals("Automation_prime", boardPage.getBoardName());
 	    }
 
 	    @Quando("^crio um card com o nome \"([^\"]*)\"$")
-	    public void crioUmCardComONome(String nomeCard) {
-	    	System.out.println("crio um card com o nome");
+	    public void crioUmCardComONome(String cardName) {
+
+			boardPage.clickAddCard("To do");
+			boardPage.addCardName(cardName);
+			Assert.assertEquals("Card existe na lista", boardPage.checkExistenceCard());
 	    }
 	    
 	    @E("^comento \"([^\"]*)\"$")
-	    public void comentoCard(String comentario) {
-	    	System.out.println("comento");
+	    public void comentoCard(String comment) {
+
+			boardPage.commentCard(comment);
+			//check o momentario
 	    }
 	    
 	    @Entao("^o card deve estar na lista$")
 	    public void cardNaLista() {
-	    	System.out.println("o card deve estar na lista");
+			Assert.assertEquals("Card existe na lista", boardPage.checkExistenceCard());
 	    } 
 	    
 	    @Quando("^excluo o card$")
 	    public void excluoCard() {
-	    	System.out.println("excluo o card");
+
+			boardPage.excludeCard();
 	    }
 	    
 	    @Entao("^o card nao existe mais$")
 	    public void cardExcluido() {
-	    	System.out.println("o card n�o existe mais");  
-	    } 	    	    	   
+
+			Assert.assertEquals("Card não existe na lista", boardPage.checkExistenceCard());
+
+		}
 	}
 
 
